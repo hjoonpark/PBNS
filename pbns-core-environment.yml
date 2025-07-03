@@ -1,0 +1,16 @@
+name: pbns
+channels:
+  - conda-forge
+dependencies:
+  - matplotlib
+  - pip
+  - python=3.11
+  - tqdm
+  - pip:
+    - chumpy==0.72
+    - scipy==1.13.0
+    - setuptools==65.7.0
+    - tensorflow==2.17.1
+    - tensorflow-graphics==2021.12.3
+
+prefix: "/nobackup/joon/miniforge3/envs/pbns"

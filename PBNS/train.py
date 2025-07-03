@@ -16,11 +16,32 @@ from Losses import *
 from util import *
 from IO import writePC2Frames
 
+# ------------------------------------------------------------------
+# tiny helper to save an OBJ (used only if you want the mesh dump)
+def _save_obj(path, verts, faces):   # >>> ADDED
+    with open(path, "w") as f:
+        for v in verts: f.write(f"v {v[0]} {v[1]} {v[2]}\n")
+        for tri in faces: f.write(f"f {tri[0]+1} {tri[1]+1} {tri[2]+1}\n")
+# ------------------------------------------------------------------
+
+print("Available physical devices:", tf.config.list_physical_devices())
+
+output_dir = './output'
+os.makedirs(output_dir, exist_ok=True)
+
 """ PARSE ARGS """
 gpu_id, name, object, body, checkpoint = parse_args()
 if checkpoint is not None:
 	checkpoint = os.path.abspath(os.path.dirname(__file__)) + '/checkpoints/' + checkpoint
-	
+
+ckpt_dir = os.path.join(output_dir, 'checkpoints')
+os.makedirs(ckpt_dir, exist_ok=True)
+
+# >>> ADDED: where to dump tensors & meshes
+save_step = 5000          # save every N optimisation steps
+npz_dir   = os.path.join(output_dir, "npz_dump")
+os.makedirs(npz_dir, exist_ok=True)
+
 """ GPU """
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ['CUDA_VISIBLE_DEVICES'] = gpu_id
@@ -30,7 +51,7 @@ stdout_steps = 100 # update stdout every N steps
 if name == 'test': stdout_steps = 1
 
 """ TRAIN PARAMS """
-batch_size = 16
+batch_size = 4
 num_epochs = 10 if checkpoint is None else 10000
 
 """ SIMULATION PARAMETERS """
@@ -69,6 +90,7 @@ for epoch in range(num_epochs):
 		""" Train step """
 		with tf.GradientTape() as tape:
 			pred = model(poses, G)
+
 			# Losses & Metrics			
 			# cloth
 			L_edge, E_edge = edge_loss(pred, model._edges, model._E, weights=model._config['edge'])
@@ -112,6 +134,37 @@ for epoch in range(num_epochs):
 					+ 'C: [' + ', '.join(['{:.4f}'.format(m / (1+step)) for m in metrics[3]]) + ']'
 					+ ' ... ETA: ' + str(timedelta(seconds=ETA)))
 			sys.stdout.flush()
+
+
+		if (step + 1) % 10000 == 0:
+			model.save(os.path.join(ckpt_dir, name))
+			print("  Checkpoint saved at step " + str(step + 1) + " to " + os.path.join(ckpt_dir, name))
+
+
+		# ---------- inside training loop ---------------------------------
+		if (step + 1) % save_step == 0:                      # >>> ADDED
+			# 1. save weights
+			model.save(os.path.join(ckpt_dir, name))
+			print("\n  ✔︎ checkpoint saved at step", step+1)
+
+			# 2. dump tensors to npz
+			npz_path = os.path.join(npz_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}.npz")
+			np.savez_compressed(
+				npz_path,
+				poses=poses.numpy(),
+				G=G.numpy(),
+				body=body.numpy(),
+				pred=pred.numpy()
+			)
+			print(f"  ✔︎ tensors saved → {os.path.basename(npz_path)}")
+
+			# 3. quick OBJ of first predicted sample (optional)
+			obj_path = os.path.join(
+				npz_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}.obj")
+			_save_obj(obj_path, pred.numpy()[0], model._F)
+			print(f"  ✔︎ mesh OBJ saved → {os.path.basename(obj_path)}")
+
+
 		step += 1
 	""" Epoch results """
 	metrics = [m / step for m in metrics]
@@ -123,4 +176,4 @@ for epoch in range(num_epochs):
 	print("Total time: " + str(timedelta(seconds=total_time)))
 	print("")
 	""" Save checkpoint """
-	model.save('checkpoints/' + name)
+	model.save(os.path.join(ckpt_dir, name))

@@ -175,6 +175,15 @@ class PBNS:
 
 	# Computes the skinning for each outfit/pose
 	def _skinning(self, T, G):
+		# ------------------------------------------------------------------
+		# self._W  : (N, J)        # trainable blend weights per vertex
+		# self._psd: (F, N, 3)     # pose-space deformation basis
+		# self._T  : (N, 3)        # template outfit vertices
+		# F = 32   # MLP latent size
+		# J = 24   # SMPL joints
+		# N = number of outfit vertices  (e.g. 12037)
+		# B = batch size                (e.g. 16)
+		# ------------------------------------------------------------------
 		W = self._W
 		W = tf.nn.elu(1e2 * self._W) # allows back-propagating gradients to zero-valued blend weights
 		W = tf.divide(W, tf.reduce_sum(W, -1, keepdims=True))
