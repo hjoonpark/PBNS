@@ -17,7 +17,7 @@ for root, _, files in os.walk(data_dir):
             pose_list.append(poses)
 
 # Save result
-save_dir = "Data"
+save_dir = "./data_CMU"
 os.makedirs(save_dir, exist_ok=True)
 train_data = np.concatenate(pose_list, axis=0)
 np.save(f"{save_dir}/train.npy", train_data)

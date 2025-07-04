@@ -1,14 +1,11 @@
 # — Exclude large data files and models —
-/PBNS/Data/train.npy
-/data_SMPL/smplx/*.pkl
-/data_CMU/**/*.npz
+train.npy
+/data_SMPL/*
+/data_CMU/*
+*.pkl
+*.npz
+*.obj
 
-# — Optionally ignore entire data folders — untracked, won't remove existing tracked files —
-PBNS/Data/
-data_SMPL/
-data_CMU/
-
-# Python global excludes
 __pycache__/
 *.py[cod]
 *$py.class

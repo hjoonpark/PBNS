@@ -1,6 +1,73 @@
+
+README.md edited by Hyojoon Park
+# Prepare SMPL
+
+1. Register and download `Download version 1.0.0 for Python 2.7 (female/male. 10 shape PCs)` from https://smpl.is.tue.mpg.de/download.php.
+
+2. In the downloaded folder `smpl/model` put the following to `./data_SMPL`.
+
+    ```
+    data_SMPL/
+    ├── basicModel_f_lbs_10_207_0_v1.0.0.pkl
+    ├── basicmodel_m_lbs_10_207_0_v1.0.0.pkl
+    ```
+
+3. Preprocess SMPL models using `preprocess.py` from `https://github.com/CalciferZh/SMPL/blob/master/preprocess.py`.
+
+    I have modifed and provided the script here `./preprocess.py`
+
+    ```
+    python preprocess.py
+    ```
+
+    It will save to 
+    ```
+    data_SMPL/
+    ├── ...
+    ├── model_f.pkl
+    ├── model_m.pkl
+    ```
+
+# Prepare CMU pose data
+
+1. Register and download `CMU (SMPL-X G)` from https://amass.is.tue.mpg.de/download.php. It will download `CMU.tar.bz2` (~1.99 GB).
+
+2. Untar and put them to `./data_CMU`.
+
+    ```
+    data_CMU/
+    ├── CMU/
+    │   ├── 01/
+    │   │   ├── 01_01_poses.npz
+    │   │   ├── ...
+    │   │   ├── 01_11_poses.npz
+    │   ├── 02/
+    │   ├── ...
+    │   ├── 18_19_Justin/
+    │   ├── ...
+    │   ├── 144/
+    ```
+
+  3. Extract poses using a script I wrote: `./parse_CMU.py`.
+
+      ```
+      python parse_CMU.py
+      ```
+
+      It will save as `./data_CMU/train.npy` with shape `(3509624, 72)`, where `3509624` is the number of all poses extracted.
+
+Now, continue to `PBNS/train.py`.
+
+***
+***
+***
+***
+***
+
+
 ## PBNS: Physically Based Neural Simulation for Unsupervised Outfit Pose Space Deformation.
 
-<img src="/gifs/PBNS Teaser.png">
+<img src="./gifs/PBNS Teaser.png">
 
 <a href="https://hbertiche.github.io/PBNS">Project Page</a> | <a href="https://dl.acm.org/doi/10.1145/3478513.3480479">Paper</a> | <a href="https://arxiv.org/abs/2012.11310">arXiv</a> | <a href="https://youtu.be/ALwhjm40zRg">Video</a>
 
@@ -24,7 +91,7 @@
 
 <img src="https://sergioescalera.com/wp-content/uploads/2021/01/clothed31.png">
 
-<img src="/gifs/seqs.gif">
+<img src="./gifs/seqs.gif">
 
 ## Outfit resizing
 
@@ -32,8 +99,8 @@ PBNS formulation also allows unsupervised outfit resizing. That is, retargetting
 Just as standard PBNS, it can deal with complete outfits with multiple layers of cloth, different fabrics, complements, ...
 
 <p float='left'>
-  <img width=400px src="/gifs/resizer0.gif">
-  <img width=400px src="/gifs/resizer1.gif">
+  <img width=400px src="./gifs/resizer0.gif">
+  <img width=400px src="./gifs/resizer1.gif">
 </p>
 
 ## Enhancing 3D Avatars
@@ -41,9 +108,9 @@ Just as standard PBNS, it can deal with complete outfits with multiple layers of
 Due to the simple formulation of PBNS and no dependency from data, it can be used to easily enhance any 3D custom avatar with realistic outfits in a matter of minutes!
 
 <p float='left'>
-  <img width=300px src="/gifs/avatar1.gif">
-  <img width=300px src="/gifs/avatar2.gif">
-  <img width=300px src="/gifs/avatar0.gif">
+  <img width=300px src="./gifs/avatar1.gif">
+  <img width=300px src="./gifs/avatar2.gif">
+  <img width=300px src="./gifs/avatar0.gif">
 </p>
 
 ## Repository structure
