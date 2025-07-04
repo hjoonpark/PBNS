@@ -133,33 +133,33 @@ for epoch in range(num_epochs):
 			model.save(os.path.join(ckpt_dir, name))
 			print("  Checkpoint saved at step " + str(step + 1) + " to " + os.path.join(ckpt_dir, name))
 
-
-		if (step + 1) % save_step == 0:
-			# 1. save weights
-			model.save(os.path.join(ckpt_dir, name))
-			print("\n  - checkpoint saved at step", step+1)
-
-			# 2. dump tensors to npz
-			npz_path = os.path.join(npz_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}.npz")
-			np.savez_compressed(
-				npz_path,
-				poses=poses.numpy(),
-				G=G.numpy(),
-				body=body.numpy(),
-				pred=pred.numpy()
-			)
-			print(f"  - tensors saved → {os.path.basename(npz_path)}")
-
-			# 3. save OBJs
-			save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_body.obj")
-			writeOBJ(save_path, model._body, model._body_faces)
-			print("  - body OBJ saved →", os.path.basename(save_path))
-
-			save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_outfit.obj")
-			writeOBJ(save_path, model._T, model._F)
-			print("  - outfit OBJ saved →", os.path.basename(save_path))
-
 		step += 1
+
+	# Saves every epoch
+	# 1. save weights
+	model.save(os.path.join(ckpt_dir, name))
+	print("\n  - checkpoint saved at step", step+1)
+
+	# 2. dump tensors to npz
+	npz_path = os.path.join(npz_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}.npz")
+	np.savez_compressed(
+		npz_path,
+		poses=poses.numpy(),
+		G=G.numpy(),
+		body=body.numpy(),
+		pred=pred.numpy()
+	)
+	print(f"  - tensors saved: {os.path.basename(npz_path)}")
+
+	# 3. save OBJs
+	save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_body.obj")
+	writeOBJ(save_path, model._body, model._body_faces)
+	print("  - body OBJ saved:", os.path.basename(save_path))
+
+	save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_outfit.obj")
+	writeOBJ(save_path, model._T, model._F)
+	print("  - outfit OBJ saved:", os.path.basename(save_path))
+
 	""" Epoch results """
 	metrics = [m / step for m in metrics]
 	print("")

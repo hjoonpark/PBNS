@@ -2,9 +2,9 @@
 train.npy
 /data_SMPL/*
 /data_CMU/*
-*.pkl
-*.npz
-*.obj
+PBNS/Data/smpl/*.pkl
+PBNS/Data/train.npy
+output/
 
 __pycache__/
 *.py[cod]
