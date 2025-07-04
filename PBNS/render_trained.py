@@ -4,33 +4,12 @@ import glob
 import numpy as np
 import sys
 from Data.smpl.smpl_np import SMPLModel
+from Model.PBNS import PBNS
 
 from IO import readOBJ, writeOBJ
 from util import loadInfo, quads2tris, weights_prior
+from values import rest_pose
 
-def read_body(body_mat):
-    if not body_mat.endswith('.mat'): body_mat = body_mat + '.mat'
-    body_data = loadInfo(os.path.abspath(os.path.dirname(__file__)) + '/' + body_mat)
-    for k, v in body_data.items():
-        if isinstance(v, np.ndarray):
-            print('  - {} : {}'.format(k, v.shape))
-        else:
-            print('  - {} : {}'.format(k, v))
-
-    body_W = body_data.get('blendweights', None)
-    faces = body_data.get('faces', None)
-    shape = body_data.get('shape', None)
-    body_T = body_data.get('body', None)
-    v_template = body_data.get('v_template', None)
-    return body_T, faces, body_W, shape, v_template
-
-def read_outfit(outfit_path):
-    outfit_T, outfit_F_tri = readOBJ(outfit_path)
-    outfit_F = quads2tris(outfit_F_tri) # triangulate
-    outfit_W = weights_prior(outfit_T, body_T, body_W)
-    outfit_W /= np.sum(outfit_W, axis=-1, keepdims=True)
-
-    return outfit_T, outfit_F, outfit_W
 
 def with_ones(X):
     ones = np.ones((*X.shape[:2], 1), dtype=np.float32)
@@ -38,64 +17,61 @@ def with_ones(X):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Render poses from a dataset.")
-    parser.add_argument("--npz_dir", type=str, default="./output/npz_dump")
+    parser.add_argument("--npz_dump_dir", type=str, default="./output/npz_dump")
     parser.add_argument("--body_mat", type=str, default="./Model/Body.mat")
-    parser.add_argument("--outfit_path", type=str, default="./Model/Outfit.obj")
-    parser.add_argument("--output_dir", type=str, default="./output/debug/train")
+    parser.add_argument("--output_dir", type=str, default="./output/trained")
     parser.add_argument("--smpl_path", type=str, default="./Data/smpl/model_f.pkl")
     args = parser.parse_args()
     os.makedirs(args.output_dir, exist_ok=True)
 
     # Read body data
-    body_T, body_F, body_W, body_shape, v_template = read_body(args.body_mat)
-
-    # Load SMPL model
-    SMPL = SMPLModel(model_path=args.smpl_path, rest_pose=body_T)
+    model_smpl = SMPLModel(model_path=args.smpl_path, rest_pose=rest_pose)
 
     # Read outfit data
-    outfit_T, outfit_F, outfit_W = read_outfit(args.outfit_path)
-    outfit_T = outfit_T[None, :, :]
+    object = "Outfit"
+    body = os.path.basename(args.body_mat).split('.')[0]
+    blendweights = False
+    model_outfit = PBNS(object=object, body=body, checkpoint=None, blendweights=False)
+    body_shape = model_outfit._shape
 
-    # Save rest pose
-    save_path = os.path.join(args.output_dir, '{}.obj'.format(os.path.basename(args.body_mat).split('.')[0]))
-    writeOBJ(save_path, body_T, body_F)
-    print(f"Saved body mesh to {save_path}")
+    outfit_F = model_outfit._F
+    body_F = model_outfit._body_faces
 
-    # npz_paths
-    npz_paths = sorted(glob.glob(os.path.join(args.npz_dir, "*.npz")))
-    npz_paths = [npz_paths[-1]]
-    print(f"Found {len(npz_paths)} files in {args.npz_dir}")
-    print()
-    # body_W shape: TensorShape([12037, 24])
-    # G shape: TensorShape([16, 24, 4, 4])
-    # T shape: TensorShape([16, 12037, 3])
-    for i, npz_path in enumerate(npz_paths):
-        print("[{}/{}]: {}".format(i + 1, len(npz_paths), npz_path))
+    npz_paths = sorted(glob.glob(os.path.join(args.npz_dump_dir, "*.npz")))
+    print("Found {} npz files in {}".format(len(npz_paths), args.npz_dump_dir))
+    assert len(npz_paths) > 0, f"No npz files found in {args.npz_dump_dir}"
+
+    n_every_frame = 10
+    for npz_path in npz_paths:
+        print("Rendering {}".format(npz_path))
+        bname = os.path.basename(npz_path).split(".npz")[0]
         data = np.load(npz_path)
+        poses = data["poses"]
+        G = data["G"]
+        body = data["body"]
+        preds = data["pred"] # outfit
 
-        poses = data['poses']
-        G = data['G']
-        body = data['body']
-        pred = data['pred']
-        
-        print("G:", G.shape)
-        print("body:", body.shape)
-        print("pred:", pred.shape)
-        print("poses:", poses.shape)
-        # skinning
-        G = np.einsum('ab,cbde->cade', outfit_W, G)
-        outfit_skinned = np.einsum('abcd,abd->abc', G, with_ones(outfit_T))[:, :, :3]
+        # print("  - poses: {}".format(poses.shape))
+        # print("  - G: {}".format(G.shape))
+        # print("  - body: {}".format(body.shape))
+        # print("  - pred: {}".format(preds.shape))
+        for batch_idx in range(poses.shape[0]):
+            if batch_idx % 8 != 0:
+                continue
 
-        for batch_idx in range(outfit_skinned.shape[0]):
-            body_name = f"{os.path.basename(npz_path).split('.')[0]}_{batch_idx:02d}_body.obj"
-            outfit_name = f"{os.path.basename(npz_path).split('.')[0]}_{batch_idx:02d}_outfit.obj"
-            save_path_body = os.path.join(args.output_dir, body_name)
-            save_path_outfit = os.path.join(args.output_dir, outfit_name)
+            pose = poses[batch_idx]
+            pred = preds[batch_idx]
 
-            """ CREATE BODY AND OUTFIT .OBJ FILES """
-            writeOBJ(save_path_body, v_template, body_F)
-            writeOBJ(save_path_outfit, outfit_skinned, outfit_F)
+            # save body
+            G, B = model_smpl.set_params(pose=pose, beta=body_shape, with_body=True)
+            save_path = os.path.join(args.output_dir, f"{bname}_{batch_idx:02d}_body.obj")
+            writeOBJ(save_path, B, body_F)
 
-            print("  -", save_path)
-
+            # save outfit
+            G, B = model_smpl.set_params(pose=pose, beta=body_shape, with_body=True)
+            save_path = os.path.join(args.output_dir, f"{bname}_{batch_idx:02d}_outfit.obj")
+            writeOBJ(save_path, pred, outfit_F)
+            
+            print("Saved body and outfit for pose {}: {}".format(batch_idx, bname))
+            
     print("DONE")

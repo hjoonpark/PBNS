@@ -38,7 +38,6 @@ class PBNS:
 			print("Loading pre-trained model: " + checkpoint)
 			self.load(checkpoint)
 
-	
 	def _read_body(self, body_mat):
 		# 'body_mat' should be the name of a MAT file with:
 		# 'body' in rest pose (6890 x 3)

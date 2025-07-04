@@ -7,6 +7,7 @@ from Data.smpl.smpl_np import SMPLModel
 
 from IO import readOBJ, writeOBJ
 from util import loadInfo, quads2tris, weights_prior
+from values import rest_pose
 
 def read_body(body_mat):
     if not body_mat.endswith('.mat'): body_mat = body_mat + '.mat'
@@ -44,9 +45,7 @@ if __name__ == "__main__":
     body_mat = args.body_mat
     
     # Read body data
-    body_T, body_F, body_W, body_shape = read_body(body_mat)
-
-    SMPL = SMPLModel(model_path=args.smpl_path, rest_pose=body_T)
+    SMPL = SMPLModel(model_path=args.smpl_path, rest_pose=rest_pose)
 
     n_every_frame = 10
     for root, _, files in os.walk(args.pose_rootdir):
