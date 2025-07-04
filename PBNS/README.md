@@ -1,3 +1,31 @@
+README.md edited by Hyojoon Park
+
+# Train
+
+  I made a small edit from
+
+  ```
+class Data:	
+	def __init__(self, poses, shape, gender, batch_size=10, mode='train'):
+  ```
+  to
+
+  ```
+class Data:	
+	def __init__(self, poses, shape, gender, batch_size=10, mode='train', n_samples=-1):
+  ```
+  to simply use a subset of training data for quick overfitting.
+
+  ### Train using
+
+    bash run_train.sh
+
+***
+***
+***
+***
+***
+
 <h3>Train script usage</h3>
 
 <b>GPU</b><br>

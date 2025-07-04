@@ -14,20 +14,13 @@ from Losses import *
 # from LossesRay import *
 
 from util import *
-from IO import writePC2Frames
-
-# ------------------------------------------------------------------
-# tiny helper to save an OBJ (used only if you want the mesh dump)
-def _save_obj(path, verts, faces):   # >>> ADDED
-    with open(path, "w") as f:
-        for v in verts: f.write(f"v {v[0]} {v[1]} {v[2]}\n")
-        for tri in faces: f.write(f"f {tri[0]+1} {tri[1]+1} {tri[2]+1}\n")
-# ------------------------------------------------------------------
+from IO import writePC2Frames, writeOBJ
 
 print("Available physical devices:", tf.config.list_physical_devices())
 
 output_dir = './output'
-os.makedirs(output_dir, exist_ok=True)
+debug_dir = os.path.join(output_dir, 'debug')
+os.makedirs(debug_dir, exist_ok=True)
 
 """ PARSE ARGS """
 gpu_id, name, object, body, checkpoint = parse_args()
@@ -51,7 +44,7 @@ stdout_steps = 100 # update stdout every N steps
 if name == 'test': stdout_steps = 1
 
 """ TRAIN PARAMS """
-batch_size = 4
+batch_size = 16
 num_epochs = 10 if checkpoint is None else 10000
 
 """ SIMULATION PARAMETERS """
@@ -73,7 +66,7 @@ optimizer = tf.optimizers.Adam()
 """ DATA """
 print("Reading data...")
 tr_poses = 'Data/train.npy'
-tr_data = Data(tr_poses, model._shape, model._gender, batch_size=batch_size)
+tr_data = Data(tr_poses, model._shape, model._gender, batch_size=batch_size, n_samples=batch_size)
 
 tr_steps = floor(tr_data._n_samples / batch_size)
 for epoch in range(num_epochs):
@@ -141,11 +134,10 @@ for epoch in range(num_epochs):
 			print("  Checkpoint saved at step " + str(step + 1) + " to " + os.path.join(ckpt_dir, name))
 
 
-		# ---------- inside training loop ---------------------------------
-		if (step + 1) % save_step == 0:                      # >>> ADDED
+		if (step + 1) % save_step == 0:
 			# 1. save weights
 			model.save(os.path.join(ckpt_dir, name))
-			print("\n  ✔︎ checkpoint saved at step", step+1)
+			print("\n  - checkpoint saved at step", step+1)
 
 			# 2. dump tensors to npz
 			npz_path = os.path.join(npz_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}.npz")
@@ -156,14 +148,16 @@ for epoch in range(num_epochs):
 				body=body.numpy(),
 				pred=pred.numpy()
 			)
-			print(f"  ✔︎ tensors saved → {os.path.basename(npz_path)}")
+			print(f"  - tensors saved → {os.path.basename(npz_path)}")
 
-			# 3. quick OBJ of first predicted sample (optional)
-			obj_path = os.path.join(
-				npz_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}.obj")
-			_save_obj(obj_path, pred.numpy()[0], model._F)
-			print(f"  ✔︎ mesh OBJ saved → {os.path.basename(obj_path)}")
+			# 3. save OBJs
+			save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_body.obj")
+			writeOBJ(save_path, model._body, model._body_faces)
+			print("  - body OBJ saved →", os.path.basename(save_path))
 
+			save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_outfit.obj")
+			writeOBJ(save_path, model._T, model._F)
+			print("  - outfit OBJ saved →", os.path.basename(save_path))
 
 		step += 1
 	""" Epoch results """

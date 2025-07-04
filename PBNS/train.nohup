@@ -1,73 +1,0 @@
-nohup: ignoring input
-==============================
-     Starting Training        
-==============================
-2025-07-02 22:08:27.441772: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
-2025-07-02 22:08:27.482403: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
-2025-07-02 22:08:27.482766: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
-To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2025-07-02 22:08:28.034195: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-2025-07-02 22:08:29.928814: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2025-07-02 22:08:29.956286: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1960] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
-Skipping registering GPU devices...
-Building model...
-Total cloth area:  1.00306
-
-	---------------------------
-	MODEL SUMMARY
-	---------------------------
-	psd:0	(32, 12037, 3)
-	fc0_w:0	(72, 32)
-	fc0_b:0	(32,)
-	fc1_w:0	(32, 32)
-	fc1_b:0	(32,)
-	fc2_w:0	(32, 32)
-	fc2_b:0	(32,)
-	fc3_w:0	(32, 32)
-	fc3_b:0	(32,)
-	---------------------------
-	Total params: 1161056
-	---------------------------
-
-Reading data...
-smpl_path: /nobackup/joon/1_Projects/PBNS/PBNS/Data/smpl/model_f.pkl
-
-Epoch 1
---------------------------
-Training...
-	Step: 100/219351 ... E: 2.97 - B: 0.228 - G: -59.8010 - C: [0.1484] ... ETA: 1 day, 11:08:52.129583	Step: 200/219351 ... E: 2.65 - B: 0.252 - G: -66.1815 - C: [0.1463] ... ETA: 1 day, 8:55:25.495936	Step: 300/219351 ... E: 2.51 - B: 0.260 - G: -66.7678 - C: [0.1441] ... ETA: 1 day, 7:59:16.739477	Step: 400/219351 ... E: 2.41 - B: 0.263 - G: -65.3479 - C: [0.1417] ... ETA: 1 day, 7:31:58.103386	Step: 500/219351 ... E: 2.35 - B: 0.264 - G: -63.6451 - C: [0.1404] ... ETA: 1 day, 7:13:48.441334	Step: 600/219351 ... E: 2.30 - B: 0.265 - G: -62.3866 - C: [0.1389] ... ETA: 1 day, 7:01:11.829779	Step: 700/219351 ... E: 2.25 - B: 0.265 - G: -61.0434 - C: [0.1379] ... ETA: 1 day, 6:51:37.337654	Step: 800/219351 ... E: 2.21 - B: 0.265 - G: -59.9338 - C: [0.1374] ... ETA: 1 day, 6:42:17.135613	Step: 900/219351 ... E: 2.18 - B: 0.265 - G: -59.2413 - C: [0.1364] ... ETA: 1 day, 6:34:48.160404	Step: 1000/219351 ... E: 2.15 - B: 0.264 - G: -58.7182 - C: [0.1354] ... ETA: 1 day, 6:27:48.781681	Saving checkpoint: ./output/checkpoints/Body
-
-  ✔︎ checkpoint saved at step 1000
-  ✔︎ tensors saved → Body_ep001_st0001000.npz
-  ✔︎ mesh OBJ saved → Body_ep001_st0001000.obj
-	Step: 1100/219351 ... E: 2.13 - B: 0.264 - G: -58.2498 - C: [0.1348] ... ETA: 1 day, 6:23:31.138177	Step: 1200/219351 ... E: 2.11 - B: 0.264 - G: -58.0896 - C: [0.1342] ... ETA: 1 day, 6:19:17.218518	Step: 1300/219351 ... E: 2.09 - B: 0.264 - G: -57.9269 - C: [0.1336] ... ETA: 1 day, 6:14:40.940090	Step: 1400/219351 ... E: 2.08 - B: 0.264 - G: -57.8058 - C: [0.1331] ... ETA: 1 day, 6:10:21.867433	Step: 1500/219351 ... E: 2.06 - B: 0.264 - G: -57.6560 - C: [0.1325] ... ETA: 1 day, 6:06:01.366605	Step: 1600/219351 ... E: 2.05 - B: 0.264 - G: -57.5975 - C: [0.1321] ... ETA: 1 day, 6:04:31.020357	Step: 1700/219351 ... E: 2.03 - B: 0.264 - G: -57.6983 - C: [0.1317] ... ETA: 1 day, 6:02:02.105749	Step: 1800/219351 ... E: 2.02 - B: 0.264 - G: -57.8880 - C: [0.1312] ... ETA: 1 day, 6:00:04.103648	Step: 1900/219351 ... E: 2.00 - B: 0.264 - G: -57.9066 - C: [0.1307] ... ETA: 1 day, 5:58:46.254627	Step: 2000/219351 ... E: 1.99 - B: 0.264 - G: -57.9261 - C: [0.1301] ... ETA: 1 day, 5:56:10.388503	Saving checkpoint: ./output/checkpoints/Body
-
-  ✔︎ checkpoint saved at step 2000
-  ✔︎ tensors saved → Body_ep001_st0002000.npz
-  ✔︎ mesh OBJ saved → Body_ep001_st0002000.obj
-	Step: 2100/219351 ... E: 1.97 - B: 0.264 - G: -57.9533 - C: [0.1296] ... ETA: 1 day, 5:54:26.923483	Step: 2200/219351 ... E: 1.96 - B: 0.264 - G: -57.8211 - C: [0.1290] ... ETA: 1 day, 5:52:02.667603	Step: 2300/219351 ... E: 1.95 - B: 0.264 - G: -57.5552 - C: [0.1284] ... ETA: 1 day, 5:49:28.746119	Step: 2400/219351 ... E: 1.94 - B: 0.264 - G: -57.4656 - C: [0.1281] ... ETA: 1 day, 5:47:06.800674	Step: 2500/219351 ... E: 1.93 - B: 0.264 - G: -57.4290 - C: [0.1276] ... ETA: 1 day, 5:45:55.801676	Step: 2600/219351 ... E: 1.91 - B: 0.264 - G: -57.4494 - C: [0.1273] ... ETA: 1 day, 5:43:29.305847	Step: 2700/219351 ... E: 1.90 - B: 0.264 - G: -57.3158 - C: [0.1269] ... ETA: 1 day, 5:41:08.714365	Step: 2800/219351 ... E: 1.90 - B: 0.263 - G: -57.2887 - C: [0.1265] ... ETA: 1 day, 5:39:21.935167	Step: 2900/219351 ... E: 1.89 - B: 0.263 - G: -57.2310 - C: [0.1261] ... ETA: 1 day, 5:37:50.225863	Step: 3000/219351 ... E: 1.88 - B: 0.263 - G: -57.2023 - C: [0.1258] ... ETA: 1 day, 5:36:08.161437	Saving checkpoint: ./output/checkpoints/Body
-
-  ✔︎ checkpoint saved at step 3000
-  ✔︎ tensors saved → Body_ep001_st0003000.npz
-  ✔︎ mesh OBJ saved → Body_ep001_st0003000.obj
-	Step: 3100/219351 ... E: 1.87 - B: 0.263 - G: -57.2427 - C: [0.1255] ... ETA: 1 day, 5:34:59.949629	Step: 3200/219351 ... E: 1.86 - B: 0.263 - G: -57.2254 - C: [0.1251] ... ETA: 1 day, 5:33:23.482049	Step: 3300/219351 ... E: 1.86 - B: 0.263 - G: -57.1823 - C: [0.1249] ... ETA: 1 day, 5:31:53.147137	Step: 3400/219351 ... E: 1.85 - B: 0.263 - G: -57.1458 - C: [0.1246] ... ETA: 1 day, 5:30:24.900234	Step: 3500/219351 ... E: 1.84 - B: 0.263 - G: -57.1117 - C: [0.1243] ... ETA: 1 day, 5:29:13.542740	Step: 3600/219351 ... E: 1.83 - B: 0.263 - G: -57.1007 - C: [0.1240] ... ETA: 1 day, 5:29:40.303035	Step: 3700/219351 ... E: 1.83 - B: 0.263 - G: -57.1197 - C: [0.1237] ... ETA: 1 day, 5:28:05.424132	Step: 3800/219351 ... E: 1.82 - B: 0.263 - G: -57.0363 - C: [0.1235] ... ETA: 1 day, 5:26:48.660973	Step: 3900/219351 ... E: 1.82 - B: 0.262 - G: -57.0497 - C: [0.1232] ... ETA: 1 day, 5:24:55.422681	Step: 4000/219351 ... E: 1.81 - B: 0.262 - G: -57.0546 - C: [0.1230] ... ETA: 1 day, 5:23:01.182354	Saving checkpoint: ./output/checkpoints/Body
-
-  ✔︎ checkpoint saved at step 4000
-  ✔︎ tensors saved → Body_ep001_st0004000.npz
-  ✔︎ mesh OBJ saved → Body_ep001_st0004000.obj
-	Step: 4100/219351 ... E: 1.81 - B: 0.262 - G: -57.0785 - C: [0.1227] ... ETA: 1 day, 5:21:37.024260	Step: 4200/219351 ... E: 1.80 - B: 0.262 - G: -57.1461 - C: [0.1225] ... ETA: 1 day, 5:20:22.310298	Step: 4300/219351 ... E: 1.80 - B: 0.262 - G: -57.1820 - C: [0.1223] ... ETA: 1 day, 5:19:49.743452	Step: 4400/219351 ... E: 1.79 - B: 0.262 - G: -57.2068 - C: [0.1221] ... ETA: 1 day, 5:18:49.638236	Step: 4500/219351 ... E: 1.79 - B: 0.262 - G: -57.2187 - C: [0.1219] ... ETA: 1 day, 5:17:29.598228	Step: 4600/219351 ... E: 1.78 - B: 0.262 - G: -57.2078 - C: [0.1217] ... ETA: 1 day, 5:16:12.151702	Step: 4700/219351 ... E: 1.78 - B: 0.262 - G: -57.2120 - C: [0.1215] ... ETA: 1 day, 5:14:54.080517	Step: 4800/219351 ... E: 1.77 - B: 0.262 - G: -57.2375 - C: [0.1213] ... ETA: 1 day, 5:13:46.549058	Step: 4900/219351 ... E: 1.77 - B: 0.262 - G: -57.3025 - C: [0.1212] ... ETA: 1 day, 5:13:20.938551	Step: 5000/219351 ... E: 1.77 - B: 0.262 - G: -57.3432 - C: [0.1209] ... ETA: 1 day, 5:12:33.054479	Saving checkpoint: ./output/checkpoints/Body
-  Checkpoint saved at step 5000 to ./output/checkpoints/Body
-	Saving checkpoint: ./output/checkpoints/Body
-
-  ✔︎ checkpoint saved at step 5000
-  ✔︎ tensors saved → Body_ep001_st0005000.npz
-  ✔︎ mesh OBJ saved → Body_ep001_st0005000.obj
-	Step: 5100/219351 ... E: 1.76 - B: 0.262 - G: -57.3588 - C: [0.1208] ... ETA: 1 day, 5:11:42.146935	Step: 5200/219351 ... E: 1.76 - B: 0.262 - G: -57.3951 - C: [0.1206] ... ETA: 1 day, 5:10:38.679801	Step: 5300/219351 ... E: 1.75 - B: 0.262 - G: -57.4047 - C: [0.1204] ... ETA: 1 day, 5:09:25.937506	Step: 5400/219351 ... E: 1.75 - B: 0.262 - G: -57.4485 - C: [0.1203] ... ETA: 1 day, 5:08:29.812727	Step: 5500/219351 ... E: 1.75 - B: 0.262 - G: -57.5033 - C: [0.1201] ... ETA: 1 day, 5:07:13.142166	Step: 5600/219351 ... E: 1.74 - B: 0.262 - G: -57.5586 - C: [0.1199] ... ETA: 1 day, 5:06:10.722909	Step: 5700/219351 ... E: 1.74 - B: 0.262 - G: -57.5708 - C: [0.1198] ... ETA: 1 day, 5:04:54.384275	Step: 5800/219351 ... E: 1.74 - B: 0.261 - G: -57.6143 - C: [0.1197] ... ETA: 1 day, 5:04:58.064399	Step: 5900/219351 ... E: 1.73 - B: 0.261 - G: -57.6023 - C: [0.1195] ... ETA: 1 day, 5:05:56.905370	Step: 6000/219351 ... E: 1.73 - B: 0.261 - G: -57.6583 - C: [0.1194] ... ETA: 1 day, 5:04:36.877082	Saving checkpoint: ./output/checkpoints/Body
-Traceback (most recent call last):
-  File "train.py", line 145, in <module>
-    if (step + 1) % save_step == 0:                      # >>> ADDED
-  File "/nobackup/joon/1_Projects/PBNS/PBNS/Model/PBNS.py", line 174, in save
-    np.save(checkpoint, values)
-  File "<__array_function__ internals>", line 180, in save
-  File "/nobackup/joon/miniforge3/envs/pbns/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
-FileNotFoundError: [Errno 2] No such file or directory: './output/checkpoints/Body.npy'
