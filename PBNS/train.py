@@ -30,8 +30,6 @@ if checkpoint is not None:
 ckpt_dir = os.path.join(output_dir, 'checkpoints')
 os.makedirs(ckpt_dir, exist_ok=True)
 
-# >>> ADDED: where to dump tensors & meshes
-save_step = 5000          # save every N optimisation steps
 npz_dir   = os.path.join(output_dir, "npz_dump")
 os.makedirs(npz_dir, exist_ok=True)
 
@@ -45,7 +43,8 @@ if name == 'test': stdout_steps = 1
 
 """ TRAIN PARAMS """
 batch_size = 16
-num_epochs = 10 if checkpoint is None else 10000
+num_epochs = 1000 # if checkpoint is None else 10000
+save_epochs = 100 
 
 """ SIMULATION PARAMETERS """
 edge_young = 15
@@ -135,30 +134,30 @@ for epoch in range(num_epochs):
 
 		step += 1
 
-	# Saves every epoch
-	# 1. save weights
-	model.save(os.path.join(ckpt_dir, name))
-	print("\n  - checkpoint saved at step", step+1)
+	if epoch % save_epochs == 0 or epoch == num_epochs - 1:
+		# 1. save weights
+		model.save(os.path.join(ckpt_dir, name))
+		print("\n  - checkpoint saved at step", step+1)
 
-	# 2. dump tensors to npz
-	npz_path = os.path.join(npz_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}.npz")
-	np.savez_compressed(
-		npz_path,
-		poses=poses.numpy(),
-		G=G.numpy(),
-		body=body.numpy(),
-		pred=pred.numpy()
-	)
-	print(f"  - tensors saved: {os.path.basename(npz_path)}")
+		# 2. dump tensors to npz
+		npz_path = os.path.join(npz_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}.npz")
+		np.savez_compressed(
+			npz_path,
+			poses=poses.numpy(),
+			G=G.numpy(),
+			body=body.numpy(),
+			pred=pred.numpy()
+		)
+		print(f"  - tensors saved: {os.path.basename(npz_path)}")
 
-	# 3. save OBJs
-	save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_body.obj")
-	writeOBJ(save_path, model._body, model._body_faces)
-	print("  - body OBJ saved:", os.path.basename(save_path))
+		# 3. save OBJs
+		save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_body.obj")
+		writeOBJ(save_path, model._body, model._body_faces)
+		print("  - body OBJ saved:", os.path.basename(save_path))
 
-	save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_outfit.obj")
-	writeOBJ(save_path, model._T, model._F)
-	print("  - outfit OBJ saved:", os.path.basename(save_path))
+		save_path = os.path.join(debug_dir, f"{name}_ep{epoch+1:03d}_st{step+1:07d}_outfit.obj")
+		writeOBJ(save_path, model._T, model._F)
+		print("  - outfit OBJ saved:", os.path.basename(save_path))
 
 	""" Epoch results """
 	metrics = [m / step for m in metrics]

@@ -4,7 +4,7 @@ train.npy
 /data_CMU/*
 PBNS/Data/smpl/*.pkl
 PBNS/Data/train.npy
-output/
+output*/
 
 __pycache__/
 *.py[cod]

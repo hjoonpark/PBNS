@@ -26,10 +26,12 @@ class Data:
 		- shuffle: shuffle
 		"""
 		# Read sample list
-		self._poses = np.load(poses)	
+		self._poses = np.load(poses)
 		if n_samples > 0:
-			self._poses = self._poses[:n_samples]
-			print(f'Using only {n_samples} samples from {poses}')
+			total = len(self._poses)
+			indices = np.linspace(0, total - 1, n_samples, dtype=int)
+			self._poses = self._poses[indices]
+			print(f'Using {n_samples} uniformly sampled poses from {total}')
 			
 		if self._poses.dtype == np.float64: self._poses = np.float32(self._poses)
 		self._n_samples = self._poses.shape[0]
