@@ -56,6 +56,8 @@ README.md edited by Hyojoon Park
 
       It will save as `./data_CMU/train.npy` with shape `(3509624, 72)`, where `3509624` is the number of all poses extracted.
 
+Move `train.npy` to `PBNS/Data/` and the SMPL models to `PBNS/smpl`, where `PBNS/train.py` looks them for.
+
 Now, continue to `PBNS/train.py`.
 
 ***
